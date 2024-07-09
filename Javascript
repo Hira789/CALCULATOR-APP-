@@ -1,0 +1,51 @@
+// JavaScript for calculator functionality
+
+// Select elements
+const history = document.getElementById('history');
+const result = document.getElementById('result');
+const buttons = document.querySelectorAll('.btn');
+let historyValue = '';
+let resultValue = '0';
+
+// Add event listeners to buttons
+buttons.forEach(button => {
+  button.addEventListener('click', () => {
+    const buttonText = button.innerText;
+
+    // Handle different button actions
+    switch (buttonText) {
+      case 'C':
+        historyValue = '';
+        resultValue = '0';
+        break;
+      case '←':
+        resultValue = resultValue.slice(0, -1) || '0';
+        break;
+      case '=':
+        historyValue += resultValue;
+        try {
+          resultValue = eval(historyValue);
+          if (resultValue === Infinity || isNaN(resultValue)) {
+            resultValue = 'Error';
+          }
+        } catch (error) {
+          resultValue = 'Error';
+        }
+        break;
+      default:
+        if (resultValue === '0' && !isNaN(buttonText)) {
+          resultValue = buttonText;
+        } else if (!isNaN(buttonText) || buttonText === '.') {
+          resultValue += buttonText;
+        } else if (buttonText !== '=') {
+          historyValue += resultValue + buttonText;
+          resultValue = '0';
+        }
+        break;
+    }
+
+    // Update display
+    history.innerText = historyValue;
+    result.innerText = resultValue;
+  });
+});
